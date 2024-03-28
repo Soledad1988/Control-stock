@@ -16,7 +16,7 @@ public class PlantaController {
 		this.plantaDAO = new PlantaDAO(connection);
 	}
 	
-	public void guaradr(Planta planta) {
+	public void guardar(Planta planta) {
 		this.plantaDAO.guardar(planta);
 	}
 }

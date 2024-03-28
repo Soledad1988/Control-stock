@@ -23,6 +23,14 @@ public class Planta {
 	}
 
 
+	public Planta(Integer codigo, String nombrePlanta, Integer cantidad, Double precio) {
+		this.codigo = codigo;
+		this.nombrePlanta = nombrePlanta;
+		this.cantidad = cantidad;
+		this.precio = precio;
+	}
+
+
 	public Integer getId() {
 		return id;
 	}
