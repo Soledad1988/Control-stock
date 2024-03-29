@@ -17,13 +17,16 @@ public class PlantaDAO {
 	}
 	
 	public void guardar(Planta planta) {
-	    String sql = "INSERT INTO plantas(codigo, nombrePlanta, cantidad, precio) VALUES (?,?,?,?)";
+		String sql = "INSERT INTO plantas(fechaIngreso, codigo, nombrePlanta, cantidad, precioCosto, precioVenta, estado) VALUES (?,?,?,?,?,?,?)";
 
 	    try(PreparedStatement stm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
-	        stm.setInt(1, planta.getCodigo());
-	        stm.setString(2, planta.getNombrePlanta());
-	        stm.setInt(3, planta.getCantidad());
-	        stm.setDouble(4, planta.getPrecio());
+	    	stm.setDate(1, planta.getFechaIngreso());
+	        stm.setInt(2, planta.getCodigo());
+	        stm.setString(3, planta.getNombrePlanta());
+	        stm.setInt(4, planta.getCantidad());
+	        stm.setDouble(5, planta.getPrecioCosto());
+	        stm.setDouble(6, planta.getPrecioVenta());
+	        stm.setBoolean(7, planta.getEstado());
 	        int affectedRows = stm.executeUpdate();
 	        
 	        System.out.println("Filas afectadas: " + affectedRows); // Imprimir el número de filas afectadas
@@ -38,5 +41,23 @@ public class PlantaDAO {
 	        throw new RuntimeException(e);
 	    }
 	}
+	
+	public double obtenerPrecioVenta(int codigo) {
+        double precioVenta = 0.0;
+        try {
+            String sql = "SELECT precioVenta FROM plantas WHERE codigo = ?";
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codigo);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                precioVenta = rs.getDouble("precioVenta");
+            }
+            stm.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Maneja la excepción de manera apropiada
+        }
+        return precioVenta;
+    }
 
 }

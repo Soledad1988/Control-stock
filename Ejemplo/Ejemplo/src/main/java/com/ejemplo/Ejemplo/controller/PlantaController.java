@@ -19,4 +19,8 @@ public class PlantaController {
 	public void guardar(Planta planta) {
 		this.plantaDAO.guardar(planta);
 	}
+	
+	public double obtenerPrecioVenta(int codigo) {
+		return this.plantaDAO.obtenerPrecioVenta(codigo);
+	}
 }
