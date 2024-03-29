@@ -1,33 +1,97 @@
 package com.ejemplo.Ejemplo.model;
 
+import java.sql.Date;
+
 public class Planta {
 	
 	private Integer id;
+	private Date fechaIngreso;
+	private Date fechaSalida;
 	private Integer codigo;
 	private String nombrePlanta;
 	private Integer cantidad;
-	private Double precio;
+	private Double precioCosto;
+	private Double precioVenta;
+	private Boolean estado;
 	
 	public Planta() {
 		
 	}
-	
 
-	public Planta(Integer id, Integer codigo, String nombrePlanta, Integer cantidad, Double precio) {
+
+	public Planta(Integer id, Date fechaIngreso, Date fechaSalida, Integer codigo, String nombrePlanta,
+			Integer cantidad, Double precioCosto, Double precioVenta, Boolean estado) {
 		super();
 		this.id = id;
+		this.fechaIngreso = fechaIngreso;
+		this.fechaSalida = fechaSalida;
 		this.codigo = codigo;
 		this.nombrePlanta = nombrePlanta;
 		this.cantidad = cantidad;
-		this.precio = precio;
+		this.precioCosto = precioCosto;
+		this.precioVenta = precioVenta;
+		this.estado = estado;
+	}
+
+	public Planta(Date fechaIngreso, Integer codigo, String nombrePlanta, Integer cantidad, 
+			Double precioCosto,Double precioVenta,  Boolean estado) {
+		this.fechaIngreso = fechaIngreso;
+		this.codigo = codigo;
+		this.nombrePlanta = nombrePlanta;
+		this.cantidad = cantidad;
+		this.precioCosto = precioCosto;
+		this.precioVenta = precioVenta;
+		this.estado = estado;
+	}
+	
+	
+	public Double getPrecioCosto() {
+		return precioCosto;
 	}
 
 
-	public Planta(Integer codigo, String nombrePlanta, Integer cantidad, Double precio) {
-		this.codigo = codigo;
-		this.nombrePlanta = nombrePlanta;
-		this.cantidad = cantidad;
-		this.precio = precio;
+	public void setPrecioCosto(Double precioCosto) {
+		this.precioCosto = precioCosto;
+	}
+
+
+	public Double getPrecioVenta() {
+		return precioVenta;
+	}
+
+
+	public void setPrecioVenta(Double precioVenta) {
+		this.precioVenta = precioVenta;
+	}
+
+
+	public Date getFechaIngreso() {
+		return fechaIngreso;
+	}
+
+
+	public void setFechaIngreso(Date fechaIngreso) {
+		this.fechaIngreso = fechaIngreso;
+	}
+
+
+	public Date getFechaSalida() {
+		return fechaSalida;
+	}
+
+
+	public void setFechaSalida(Date fechaSalida) {
+		this.fechaSalida = fechaSalida;
+	}
+
+
+	public Boolean getEstado() {
+		return estado;
+	}
+
+
+	public void setEstado(Boolean estado) {
+		this.estado = estado;
 	}
 
 
@@ -65,13 +129,9 @@ public class Planta {
 		this.cantidad = cantidad;
 	}
 
-	public Double getPrecio() {
-		return precio;
+	//---------------------------------------
+	public void calcularPrecioVenta(double porcentajeGanancia) {
+	    this.precioVenta = this.precioCosto * (1 + porcentajeGanancia / 100);
 	}
-
-	public void setPrecio(Double precio) {
-		this.precio = precio;
-	}
-
 	
 }
