@@ -2,6 +2,7 @@ package com.ejemplo.Ejemplo.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.ejemplo.Ejemplo.Conexion;
 import com.ejemplo.Ejemplo.dao.PlantaDAO;
@@ -22,5 +23,9 @@ public class PlantaController {
 	
 	public double obtenerPrecioVenta(int codigo) {
 		return this.plantaDAO.obtenerPrecioVenta(codigo);
+	}
+	
+	public List<Planta> listar() {
+		return this.plantaDAO.listar();
 	}
 }

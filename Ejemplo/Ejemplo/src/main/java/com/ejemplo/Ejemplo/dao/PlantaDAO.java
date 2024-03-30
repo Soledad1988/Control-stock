@@ -1,10 +1,13 @@
 package com.ejemplo.Ejemplo.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ejemplo.Ejemplo.model.Planta;
 
@@ -59,5 +62,31 @@ public class PlantaDAO {
         }
         return precioVenta;
     }
+	
+	 public List<Planta> listar() {
+	        List<Planta> plantas = new ArrayList<>();
+	        String sql = "SELECT id, fechaIngreso, codigo, nombrePlanta, cantidad, precioCosto, precioVenta FROM plantas";
+
+	        try (PreparedStatement stm = con.prepareStatement(sql)) {
+	            try (ResultSet rs = stm.executeQuery()) {
+	                while (rs.next()) {
+	                    Planta planta = new Planta();
+	                    planta.setId(rs.getInt("id"));
+	                    planta.setFechaIngreso(rs.getDate("fechaIngreso"));
+	                    planta.setCodigo(rs.getInt("codigo"));
+	                    planta.setNombrePlanta(rs.getString("nombrePlanta"));
+	                    planta.setCantidad(rs.getInt("cantidad"));
+	                    planta.setPrecioCosto(rs.getDouble("precioCosto"));
+	                    planta.setPrecioVenta(rs.getDouble("precioVenta"));
+	                    plantas.add(planta);
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            throw new RuntimeException(e);
+	        }
+
+	        return plantas;
+	    }
 
 }
