@@ -9,6 +9,8 @@ import com.ejemplo.Ejemplo.model.Planta;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -18,6 +20,7 @@ public class BajaMercaderia extends JFrame {
     private JDateChooser textFechaIngreso;
     private PlantaController plantaController;
     private JTable tabla;
+    private JSpinner spinnerCantidad;
     private DefaultTableModel modelo;
 
     public BajaMercaderia() throws SQLException {
@@ -89,11 +92,37 @@ public class BajaMercaderia extends JFrame {
     
     private void configurarAccionesDelFormulario() {
     	   
-    	 botonBajaVenta.addActionListener(new ActionListener() {
-    	        public void actionPerformed(ActionEvent e) {
-    	           // guardar();
+    	botonBajaVenta.addActionListener(new ActionListener() {
+    	    public void actionPerformed(ActionEvent e) {
+    	        try {
+    	            int filaSeleccionada = tabla.getSelectedRow();
+    	            if (filaSeleccionada == -1) {
+    	                JOptionPane.showMessageDialog(null, "Seleccione una planta de la tabla para realizar la venta.");
+    	            } else {
+    	                int codigoPlanta = (int) modelo.getValueAt(filaSeleccionada, 2); // Obtener el código de la planta
+    	                int cantidadVendida = (int) spinnerCantidad.getValue(); // Obtener la cantidad vendida del JSpinner
+    	                boolean ventaRealizada = plantaController.realizarVenta(codigoPlanta, cantidadVendida);
+    	                if (ventaRealizada) {
+    	                    JOptionPane.showMessageDialog(null, "Venta realizada con éxito.");
+    	                    
+    	                    // Actualizar la cantidad en la tabla
+    	                    int cantidadActual = (int) modelo.getValueAt(filaSeleccionada, 4); // Obtener la cantidad actual de plantas
+    	                    int nuevaCantidad = cantidadActual - cantidadVendida; // Calcular la nueva cantidad
+    	                    modelo.setValueAt(nuevaCantidad, filaSeleccionada, 4); // Actualizar la cantidad en la tabla
+    	                } else {
+    	                    JOptionPane.showMessageDialog(null, "No hay suficiente cantidad en stock para realizar la venta.");
+    	                }
+    	            }
+    	        } catch (SQLException ex) {
+    	            ex.printStackTrace(); // Imprimir el stack trace en caso de error
+    	            // Manejar la excepción de manera apropiada, como mostrar un mensaje de error al usuario
+    	            JOptionPane.showMessageDialog(null, "Error al realizar la venta: " + ex.getMessage());
     	        }
-    	    });
+    	    }
+    	});
+
+
+
 
     	 botonBajaPorRotura.addActionListener(new ActionListener() {
     	        public void actionPerformed(ActionEvent e) {
@@ -130,6 +159,11 @@ public class BajaMercaderia extends JFrame {
         JScrollPane scrollPane = new JScrollPane(tabla);
         scrollPane.setBounds(10, 72, 532, 218);
         container.add(scrollPane);
+        
+        spinnerCantidad = new JSpinner();
+        spinnerCantidad.setModel(new SpinnerNumberModel(1, 1, 999, 1)); // Valor inicial, mínimo, máximo, incremento
+        spinnerCantidad.setBounds(450, 37, 80, 30);
+        container.add(spinnerCantidad);
 
         setSize(675, 397);
         setVisible(true);

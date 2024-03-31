@@ -28,4 +28,12 @@ public class PlantaController {
 	public List<Planta> listar() {
 		return this.plantaDAO.listar();
 	}
+	
+	public boolean realizarVenta(int codigo, int cantidad) throws SQLException {
+	    return this.plantaDAO.realizarVenta(codigo, cantidad);
+	}
+	
+	public int obtenerCantidadVendida(int plantaId) {
+	    return this.plantaDAO.obtenerCantidadVendida(plantaId);
+	}
 }
