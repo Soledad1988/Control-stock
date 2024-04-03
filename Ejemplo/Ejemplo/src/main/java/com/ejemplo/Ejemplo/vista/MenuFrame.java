@@ -24,7 +24,10 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class MenuFrame extends JFrame {
-    private JButton botonIngreso;
+	private AltaMercaderia ingresoMercaderias;
+	private BajaMercaderia bajaMercaderias;
+	private ReporteStock reporte;
+    private JButton botonIngreso, botonEgreso, botonReporte;
     private PlantaController plantaController;
 
     public MenuFrame() throws SQLException {
@@ -54,14 +57,14 @@ public class MenuFrame extends JFrame {
         Container container = getContentPane();
         container.add(botonIngreso);
         
-        JButton botonEgreso = new JButton("Egreso");
+        botonEgreso = new JButton("Egreso");
         botonEgreso.setFont(new Font("Tahoma", Font.BOLD, 14));
         botonEgreso.setForeground(Color.BLACK);
         botonEgreso.setBackground(Color.GRAY);
         botonEgreso.setBounds(31, 161, 125, 67);
         getContentPane().add(botonEgreso);
         
-        JButton botonReporte = new JButton("Reporte");
+        botonReporte = new JButton("Reporte");
         botonReporte.setFont(new Font("Tahoma", Font.BOLD, 14));
         botonReporte.setForeground(Color.BLACK);
         botonReporte.setBackground(Color.GRAY);
@@ -96,13 +99,57 @@ public class MenuFrame extends JFrame {
     	   
     	 botonIngreso.addActionListener(new ActionListener() {
     	        public void actionPerformed(ActionEvent e) {
-    	            //guardar();
+    	        	try {
+						abrirAltaMercaderias();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
     	        }
     	    });
+    	 
+    	 botonEgreso.addActionListener(new ActionListener() {
+ 	        public void actionPerformed(ActionEvent e) {
+ 	        	try {
+						abrirBajaMercaderias();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+ 	        }
+ 	    });
+    	 
+    	 botonReporte.addActionListener(new ActionListener() {
+ 	        public void actionPerformed(ActionEvent e) {
+ 	        	try {
+ 	        		abrirStock();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+ 	        }
+ 	    });
     	
     }
   
 
+    private void abrirAltaMercaderias() throws SQLException {
+        ingresoMercaderias = new AltaMercaderia();
+        ingresoMercaderias.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ingresoMercaderias.setVisible(true);
+    }
+
+    private void abrirBajaMercaderias() throws SQLException {
+        bajaMercaderias = new BajaMercaderia();
+        bajaMercaderias.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        bajaMercaderias.setVisible(true);
+    }
+
+    private void abrirStock() throws SQLException {
+        reporte = new ReporteStock();
+        reporte.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        reporte.setVisible(true);
+    }
 
     public static void main(String[] args) {
  		EventQueue.invokeLater(new Runnable() {
