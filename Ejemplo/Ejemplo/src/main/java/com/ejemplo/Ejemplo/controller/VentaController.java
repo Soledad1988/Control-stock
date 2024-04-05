@@ -2,6 +2,7 @@ package com.ejemplo.Ejemplo.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import com.ejemplo.Ejemplo.model.Venta;
@@ -20,5 +21,5 @@ private VentaDAO ventaDAO;
 	public List<Venta> obtenerVentasPorPlanta(int plantaId) {
 	    return this.ventaDAO.obtenerVentasPorPlanta(plantaId);
 	}
-
+	
 }
