@@ -24,7 +24,7 @@ public class BajaMercaderia extends JFrame {
     private DefaultTableModel modelo;
 
     public BajaMercaderia() throws SQLException {
-        super("Alta de Mercadería");
+        super("Baja de Mercadería");
 
         this.plantaController = new PlantaController();
         // Configuración del fondo rosa claro
@@ -101,6 +101,8 @@ public class BajaMercaderia extends JFrame {
     	            } else {
     	                int codigoPlanta = (int) modelo.getValueAt(filaSeleccionada, 2); // Obtener el código de la planta
     	                int cantidadVendida = (int) spinnerCantidad.getValue(); // Obtener la cantidad vendida del JSpinner
+    	                
+    	                // Realizar la venta y obtener si fue exitosa
     	                boolean ventaRealizada = plantaController.realizarVenta(codigoPlanta, cantidadVendida);
     	                if (ventaRealizada) {
     	                    JOptionPane.showMessageDialog(null, "Venta realizada con éxito.");
@@ -109,17 +111,31 @@ public class BajaMercaderia extends JFrame {
     	                    int cantidadActual = (int) modelo.getValueAt(filaSeleccionada, 4); // Obtener la cantidad actual de plantas
     	                    int nuevaCantidad = cantidadActual - cantidadVendida; // Calcular la nueva cantidad
     	                    modelo.setValueAt(nuevaCantidad, filaSeleccionada, 4); // Actualizar la cantidad en la tabla
+    	                    
+    	                    // Actualizar el stock en la base de datos
+    	                    int cantidadStockActual = plantaController.obtenerCantidadTotalComprada(codigoPlanta) - 
+    	                                               plantaController.obtenerCantidadVendida(codigoPlanta);
+    	                    int nuevoStock = cantidadStockActual - cantidadVendida;
+    	                    // Actualizar el stock en la base de datos
+    	                    plantaController.actualizarStock(codigoPlanta, nuevoStock);
+    	                    
+    	                    // Verificar si el stock es cero y mostrar un mensaje
+    	                    if (nuevoStock == 0) {
+    	                        JOptionPane.showMessageDialog(null, "¡Atención! El stock es cero.");
+    	                    }
     	                } else {
     	                    JOptionPane.showMessageDialog(null, "No hay suficiente cantidad en stock para realizar la venta.");
     	                }
     	            }
     	        } catch (SQLException ex) {
-    	            ex.printStackTrace(); // Imprimir el stack trace en caso de error
+    	            ex.printStackTrace();
     	            // Manejar la excepción de manera apropiada, como mostrar un mensaje de error al usuario
     	            JOptionPane.showMessageDialog(null, "Error al realizar la venta: " + ex.getMessage());
     	        }
     	    }
     	});
+
+
 
 
 
