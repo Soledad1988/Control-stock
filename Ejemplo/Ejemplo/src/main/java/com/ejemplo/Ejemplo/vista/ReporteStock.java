@@ -11,6 +11,7 @@ import com.ejemplo.Ejemplo.model.Planta;
 import com.ejemplo.Ejemplo.model.Venta;
 
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JSpinner;
@@ -91,6 +92,35 @@ public class ReporteStock extends JFrame {
 
 	        // Ocultar la columna de ID
 	        tabla.removeColumn(tabla.getColumnModel().getColumn(0));
+	        
+	        // Definir el renderizador de celdas personalizado para la columna "Cantidad en Stock"
+	        DefaultTableCellRenderer stockRenderer = new DefaultTableCellRenderer() {
+	            @Override
+	            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	                Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+	                // Obtener el valor de la celda en la columna "Cantidad en Stock"
+	                int cantidadStock = Integer.parseInt(table.getValueAt(row, column).toString());
+
+	                // Determinar el color de texto según la cantidad en stock
+	                Color colorTexto;
+	                if (cantidadStock <= 0) {
+	                    colorTexto = Color.RED; // Sin stock
+	                } else if (cantidadStock <= 10) {
+	                    colorTexto = Color.YELLOW; // Menos de 10 en stock
+	                } else {
+	                    colorTexto = Color.GREEN; // Más de 10 en stock
+	                }
+
+	                // Establecer el color de texto
+	                comp.setForeground(colorTexto);
+
+	                return comp;
+	            }
+	        };
+
+	        // Asignar el renderizador de celdas personalizado a la columna "Cantidad en Stock"
+	        tabla.getColumnModel().getColumn(5).setCellRenderer(stockRenderer);
 
 	        JScrollPane scrollPane = new JScrollPane(tabla);
 	        scrollPane.setBounds(18, 90, 750, 330);
@@ -107,30 +137,21 @@ public class ReporteStock extends JFrame {
 	        // Llenar la tabla con los datos obtenidos
 	        if (plantas != null) {
 	            for (Planta planta : plantas) {
-	                List<Venta> ventas = ventaController.obtenerVentasPorPlanta(planta.getId()); // Obtener las ventas para esta planta
-
-	                int cantidadComprada = planta.getCantidad();
+	                // Obtener la cantidad total comprada de la planta
+	                int cantidadComprada = plantaController.obtenerCantidadTotalComprada(planta.getId());
+	                // Obtener las ventas para esta planta
 	                int cantidadVendida = 0;
-	                Date fechaSalida = planta.getFechaSalida(); // Fecha de salida predeterminada
-
-	                // Calcular la cantidad vendida y la fecha de salida
+	                List<Venta> ventas = ventaController.obtenerVentasPorPlanta(planta.getId());
 	                for (Venta venta : ventas) {
 	                    cantidadVendida += venta.getCantidad();
-	                    fechaSalida = venta.getFechaVenta(); // La fecha de salida se actualiza con la fecha de venta más reciente
 	                }
-
-	                int cantidadStock = cantidadComprada - cantidadVendida; // Calcular la cantidad en stock
+	                
+	                // Calcular la cantidad en stock
+	                int cantidadStock = cantidadComprada - cantidadVendida;
 
 	                // Agregar fila al modelo de la tabla
-	                modelo.addRow(new Object[]{
-	                    planta.getFechaIngreso(), // Fecha de ingreso
-	                    fechaSalida, // Fecha de salida
-	                    planta.getCodigo(),
-	                    planta.getNombrePlanta(),
-	                    cantidadComprada, // Cantidad comprada
-	                    cantidadVendida, // Cantidad vendida
-	                    cantidadStock 
-	                });
+	                modelo.addRow(new Object[] { planta.getFechaIngreso(), planta.getFechaSalida(), planta.getCodigo(),
+	                        planta.getNombrePlanta(), cantidadComprada, cantidadVendida, cantidadStock });
 	            }
 	        }
 	    }
