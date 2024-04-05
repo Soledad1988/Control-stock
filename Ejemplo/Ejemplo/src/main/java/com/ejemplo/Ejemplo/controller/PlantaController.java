@@ -2,6 +2,7 @@ package com.ejemplo.Ejemplo.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import com.ejemplo.Ejemplo.Conexion;
@@ -36,4 +37,14 @@ public class PlantaController {
 	public int obtenerCantidadVendida(int plantaId) {
 	    return this.plantaDAO.obtenerCantidadVendida(plantaId);
 	}
+	
+	public int obtenerCantidadTotalComprada(int plantaId) {
+		return this.plantaDAO.obtenerCantidadTotalComprada(plantaId);
+	}
+	
+	// Método para actualizar el stock en la base de datos
+    public void actualizarStock(int codigoPlanta, int nuevoStock) throws SQLException {
+        this.plantaDAO.actualizarStock(codigoPlanta, nuevoStock);
+    }
+	
 }

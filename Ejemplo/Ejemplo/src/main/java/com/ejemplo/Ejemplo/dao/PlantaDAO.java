@@ -89,7 +89,6 @@ public class PlantaDAO {
 	        return plantas;
 	    }
 	 
-	 
 	 public boolean realizarVenta(int codigo, int cantidad) throws SQLException {
 		    int cantidadDisponible = obtenerCantidadDisponible(codigo);
 		    if (cantidadDisponible < cantidad) {
@@ -102,6 +101,11 @@ public class PlantaDAO {
 
 		    // Actualizar la cantidad en stock
 		    int nuevaCantidad = planta.getCantidad() - cantidad;
+		    if (nuevaCantidad < 0) {
+		        System.out.println("Error: La cantidad vendida es mayor que la cantidad en stock.");
+		        return false;
+		    }
+
 		    actualizarCantidad(planta.getId(), nuevaCantidad);
 
 		    // Obtener la fecha actual para la fecha de salida
@@ -117,6 +121,8 @@ public class PlantaDAO {
 
 		    return true;
 		}
+
+
 
 		private void registrarVenta(int plantaId, int cantidad, Date fechaVenta) {
 		    try {
@@ -223,8 +229,70 @@ public class PlantaDAO {
 		    }
 		    return cantidadVendida;
 		}
-
 		
+		// Método para obtener la cantidad total comprada de una planta específica
+	    public int obtenerCantidadTotalComprada(int plantaId) {
+	        int cantidadTotalComprada = 0;
+	        try {
+	            String sql = "SELECT SUM(cantidad) AS cantidad_total FROM plantas WHERE id = ?";
+	            PreparedStatement stm = con.prepareStatement(sql);
+	            stm.setInt(1, plantaId);
+	            ResultSet rs = stm.executeQuery();
+	            if (rs.next()) {
+	                cantidadTotalComprada = rs.getInt("cantidad_total");
+	            }
+	            stm.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            // Manejar la excepción de manera apropiada
+	        }
+	        return cantidadTotalComprada;
+	    }
+	    
+	    // Método para actualizar el stock en la base de datos
+	    public void actualizarStock(int codigoPlanta, int cantidadVendida) {
+	        try {
+	            // Obtener el stock actual de la planta
+	            int stockActual = obtenerStockActual(codigoPlanta);
+	            
+	            // Calcular el nuevo stock restando la cantidad vendida del stock actual
+	            int nuevoStock = stockActual - cantidadVendida;
+	            
+	            // Actualizar el stock en la base de datos
+	            String sql = "UPDATE plantas SET cantidad = ? WHERE codigo = ?";
+	            PreparedStatement stm = con.prepareStatement(sql);
+	            stm.setInt(1, nuevoStock);
+	            stm.setInt(2, codigoPlanta);
+	            int filasAfectadas = stm.executeUpdate(); // Ejecutar la actualización
+	            System.out.println("Filas afectadas al actualizar el stock: " + filasAfectadas);
+	            stm.close(); // Cerrar el PreparedStatement
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("Error al actualizar el stock en la base de datos.", e); // Lanzar una excepción en caso de error
+	        }
+	    }
+
+	    // Método para obtener el stock actual de una planta específica
+	    private int obtenerStockActual(int codigoPlanta) {
+	        int stockActual = 0;
+	        try {
+	            String sql = "SELECT cantidad FROM plantas WHERE codigo = ?";
+	            PreparedStatement stm = con.prepareStatement(sql);
+	            stm.setInt(1, codigoPlanta);
+	            ResultSet rs = stm.executeQuery();
+	            if (rs.next()) {
+	                stockActual = rs.getInt("cantidad");
+	            }
+	            stm.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("Error al obtener el stock actual de la planta.", e); // Lanzar una excepción en caso de error
+	        }
+	        return stockActual;
+	    }
+
+
+
 		
 
 }
