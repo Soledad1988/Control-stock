@@ -42,17 +42,15 @@ public class MenuFrame extends JFrame {
 
         botonIngreso = new JButton("Ingreso");
         botonIngreso.setFont(new Font("Tahoma", Font.BOLD, 14));
-        botonIngreso.setBounds(31, 69, 125, 67);
+        botonIngreso.setBounds(10, 69, 125, 67);
         botonIngreso.setBackground(Color.GRAY); // Establecer el color de fondo del botón
         botonIngreso.setForeground(Color.BLACK); // Establecer el color del texto del botón
         
         JLabel lblNewLabel = new JLabel("New label");
         lblNewLabel.setIcon(new ImageIcon("C:\\Users\\brent\\Downloads\\planta.jpg"));
-        lblNewLabel.setBounds(176, 66, 169, 185);
+        lblNewLabel.setBounds(160, 69, 169, 185);
         getContentPane().add(lblNewLabel);
         
-
-
         // Agregar componentes al contenedor
         Container container = getContentPane();
         container.add(botonIngreso);
@@ -61,21 +59,22 @@ public class MenuFrame extends JFrame {
         botonEgreso.setFont(new Font("Tahoma", Font.BOLD, 14));
         botonEgreso.setForeground(Color.BLACK);
         botonEgreso.setBackground(Color.GRAY);
-        botonEgreso.setBounds(31, 161, 125, 67);
+        botonEgreso.setBounds(10, 161, 125, 67);
         getContentPane().add(botonEgreso);
         
-        botonReporte = new JButton("Reporte");
+        botonReporte = new JButton("Reporte Stock");
         botonReporte.setFont(new Font("Tahoma", Font.BOLD, 14));
         botonReporte.setForeground(Color.BLACK);
         botonReporte.setBackground(Color.GRAY);
-        botonReporte.setBounds(366, 69, 125, 67);
+        botonReporte.setBounds(339, 69, 146, 67);
         getContentPane().add(botonReporte);
         
-        JButton botonGuardar_1_1_1 = new JButton("Guardar");
-        botonGuardar_1_1_1.setForeground(Color.WHITE);
-        botonGuardar_1_1_1.setBackground(Color.GRAY);
-        botonGuardar_1_1_1.setBounds(366, 161, 125, 67);
-        getContentPane().add(botonGuardar_1_1_1);
+        JButton botonReporteVentas = new JButton("Reporte Ventas");
+        botonReporteVentas.setFont(new Font("Tahoma", Font.BOLD, 14));
+        botonReporteVentas.setForeground(SystemColor.desktop);
+        botonReporteVentas.setBackground(Color.GRAY);
+        botonReporteVentas.setBounds(339, 161, 146, 67);
+        getContentPane().add(botonReporteVentas);
         
         JLabel lblTituloMenu = new JLabel("Menú");
         lblTituloMenu.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
