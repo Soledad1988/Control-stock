@@ -31,7 +31,6 @@ public class AltaMercaderia extends JFrame {
     private JTextField textoCodigo, textoNombre, textoCantidad, textoPrecio;
     private JButton botonGuardar, botonEtiqueta;
     private JDateChooser textFechaIngreso;
-    private JCheckBox chckbxEstado;
     private JTextField textoPorcentajeGanancia;
     private PlantaController plantaController;
 
@@ -74,7 +73,7 @@ public class AltaMercaderia extends JFrame {
         textoPrecio.setBounds(147, 172, 128, 25);
 
         botonGuardar = new JButton("Guardar");
-        botonGuardar.setBounds(176, 324, 95, 25);
+        botonGuardar.setBounds(180, 284, 95, 25);
         botonGuardar.setBackground(Color.GRAY); // Establecer el color de fondo del botón
         botonGuardar.setForeground(Color.WHITE); // Establecer el color del texto del botón
         
@@ -84,7 +83,7 @@ public class AltaMercaderia extends JFrame {
         getContentPane().add(lblNewLabel);
         
         botonEtiqueta = new JButton("Imprimir Etiqueta");
-        botonEtiqueta.setBounds(281, 324, 148, 25);
+        botonEtiqueta.setBounds(285, 284, 148, 25);
         botonEtiqueta.setBackground(Color.GRAY); // Establecer el color de fondo del botón
         botonEtiqueta.setForeground(Color.WHITE);
         botonEtiqueta.setVisible(false); // Ocultar el botón imprimir inicialmente
@@ -103,15 +102,6 @@ public class AltaMercaderia extends JFrame {
         container.add(textoCantidad);
         container.add(textoPrecio);
         container.add(botonGuardar);
-        
-        JLabel labelEstado = new JLabel("Estado:");
-        labelEstado.setFont(new Font("Tahoma", Font.BOLD, 14));
-        labelEstado.setBounds(22, 254, 95, 25);
-        getContentPane().add(labelEstado);
-        
-        chckbxEstado = new JCheckBox("Activo");
-        chckbxEstado.setBounds(148, 256, 127, 23);
-        getContentPane().add(chckbxEstado);
         
         JLabel labelFecha = new JLabel("Fecha:");
         labelFecha.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -181,7 +171,6 @@ public class AltaMercaderia extends JFrame {
             String nombrePlanta = textoNombre.getText();
             Integer cantidad = Integer.parseInt(textoCantidad.getText());
             Double precioCosto = Double.parseDouble(textoPrecio.getText());
-            boolean activo = chckbxEstado.isSelected(); // Obtener el estado activo desde el checkbox
             double porcentajeGanancia = Double.parseDouble(textoPorcentajeGanancia.getText()); // Obtener el porcentaje de ganancia
 
          // Calcular el precio de venta
@@ -191,7 +180,7 @@ public class AltaMercaderia extends JFrame {
             DecimalFormat df = new DecimalFormat("#.##");
             precioVenta = Double.valueOf(df.format(precioVenta));
             
-            Planta planta = new Planta(java.sql.Date.valueOf(fechaIngreso), codigo, nombrePlanta, cantidad, precioCosto, precioVenta, activo);
+            Planta planta = new Planta(java.sql.Date.valueOf(fechaIngreso), codigo, nombrePlanta, cantidad, precioCosto, precioVenta);
             this.plantaController.guardar(planta);
 
             // Mostrar un mensaje de confirmación
