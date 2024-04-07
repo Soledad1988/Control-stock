@@ -12,7 +12,7 @@ public class Planta {
 	private Integer cantidad;
 	private Double precioCosto;
 	private Double precioVenta;
-	private Boolean estado;
+	
 	
 	public Planta() {
 		
@@ -20,7 +20,7 @@ public class Planta {
 
 
 	public Planta(Integer id, Date fechaIngreso, Date fechaSalida, Integer codigo, String nombrePlanta,
-			Integer cantidad, Double precioCosto, Double precioVenta, Boolean estado) {
+			Integer cantidad, Double precioCosto, Double precioVenta) {
 		super();
 		this.id = id;
 		this.fechaIngreso = fechaIngreso;
@@ -30,20 +30,18 @@ public class Planta {
 		this.cantidad = cantidad;
 		this.precioCosto = precioCosto;
 		this.precioVenta = precioVenta;
-		this.estado = estado;
 	}
 
+
 	public Planta(Date fechaIngreso, Integer codigo, String nombrePlanta, Integer cantidad, 
-			Double precioCosto,Double precioVenta,  Boolean estado) {
+			Double precioCosto,Double precioVenta) {
 		this.fechaIngreso = fechaIngreso;
 		this.codigo = codigo;
 		this.nombrePlanta = nombrePlanta;
 		this.cantidad = cantidad;
 		this.precioCosto = precioCosto;
 		this.precioVenta = precioVenta;
-		this.estado = estado;
 	}
-	
 	
 	public Double getPrecioCosto() {
 		return precioCosto;
@@ -82,16 +80,6 @@ public class Planta {
 
 	public void setFechaSalida(Date fechaSalida) {
 		this.fechaSalida = fechaSalida;
-	}
-
-
-	public Boolean getEstado() {
-		return estado;
-	}
-
-
-	public void setEstado(Boolean estado) {
-		this.estado = estado;
 	}
 
 
