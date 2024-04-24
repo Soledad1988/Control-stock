@@ -2,7 +2,6 @@ package com.ejemplo.Ejemplo.vista;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -173,12 +172,7 @@ public class AltaMercaderia extends JFrame {
             Double precioCosto = Double.parseDouble(textoPrecio.getText());
             double porcentajeGanancia = Double.parseDouble(textoPorcentajeGanancia.getText()); // Obtener el porcentaje de ganancia
 
-         // Calcular el precio de venta
-            double precioVenta = precioCosto * (1 + (porcentajeGanancia / 100));
-            
-            // Redondear el precio de venta a dos decimales
-            DecimalFormat df = new DecimalFormat("#.##");
-            precioVenta = Double.valueOf(df.format(precioVenta));
+            double precioVenta = this.plantaController.calcularPrecioVenta(precioCosto, porcentajeGanancia);
             
             Planta planta = new Planta(java.sql.Date.valueOf(fechaIngreso), codigo, nombrePlanta, cantidad, precioCosto, precioVenta);
             this.plantaController.guardar(planta);

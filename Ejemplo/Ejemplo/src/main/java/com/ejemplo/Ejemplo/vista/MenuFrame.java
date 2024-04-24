@@ -2,22 +2,7 @@ package com.ejemplo.Ejemplo.vista;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.ejemplo.Ejemplo.controller.PlantaController;
-import com.ejemplo.Ejemplo.model.Planta;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import javax.swing.JOptionPane;
-
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 
 
 import java.awt.*;
@@ -27,7 +12,8 @@ public class MenuFrame extends JFrame {
 	private AltaMercaderia ingresoMercaderias;
 	private BajaMercaderia bajaMercaderias;
 	private ReporteStock reporte;
-    private JButton botonIngreso, botonEgreso, botonReporte;
+	private ReporteVentas reporteVentas;
+    private JButton botonIngreso, botonEgreso, botonReporte, botonReporteVentas;
     private PlantaController plantaController;
 
     public MenuFrame() throws SQLException {
@@ -69,7 +55,7 @@ public class MenuFrame extends JFrame {
         botonReporte.setBounds(339, 69, 146, 67);
         getContentPane().add(botonReporte);
         
-        JButton botonReporteVentas = new JButton("Reporte Ventas");
+        botonReporteVentas = new JButton("Reporte Ventas");
         botonReporteVentas.setFont(new Font("Tahoma", Font.BOLD, 14));
         botonReporteVentas.setForeground(SystemColor.desktop);
         botonReporteVentas.setBackground(Color.GRAY);
@@ -128,6 +114,17 @@ public class MenuFrame extends JFrame {
 					}
  	        }
  	    });
+    	 
+    	 botonReporteVentas.addActionListener(new ActionListener() {
+ 	        public void actionPerformed(ActionEvent e) {
+ 	        	try {
+ 	        		abrirReporteVentas();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+ 	        }
+ 	    });
     	
     }
   
@@ -148,6 +145,12 @@ public class MenuFrame extends JFrame {
         reporte = new ReporteStock();
         reporte.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         reporte.setVisible(true);
+    }
+    
+    private void abrirReporteVentas() throws SQLException {
+        reporteVentas = new ReporteVentas();
+        reporteVentas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        reporteVentas.setVisible(true);
     }
 
     public static void main(String[] args) {

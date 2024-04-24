@@ -5,7 +5,11 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import com.ejemplo.Ejemplo.controller.PlantaController;
+import com.ejemplo.Ejemplo.controller.StockController;
+import com.ejemplo.Ejemplo.controller.VentaController;
 import com.ejemplo.Ejemplo.model.Planta;
+import com.ejemplo.Ejemplo.model.Venta;
+
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
@@ -16,9 +20,11 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class BajaMercaderia extends JFrame {
-    private JButton botonBajaVenta, botonBajaPorRotura;
+    private JButton botonBajaVenta;
     private JDateChooser textFechaIngreso;
     private PlantaController plantaController;
+    private VentaController ventaController;
+    private StockController stockController;
     private JTable tabla;
     private JSpinner spinnerCantidad;
     private DefaultTableModel modelo;
@@ -27,25 +33,20 @@ public class BajaMercaderia extends JFrame {
         super("Baja de Mercadería");
 
         this.plantaController = new PlantaController();
+        this.ventaController = new VentaController();
+        this.stockController = new StockController();
+
         // Configuración del fondo rosa claro
         getContentPane().setBackground(new Color(255, 204, 204));
 
         // Configuración del diseño del formulario
         getContentPane().setLayout(null);
 
-        botonBajaVenta = new JButton("Baja por Venta");
-        botonBajaVenta.setBounds(126, 324, 128, 25);
+        botonBajaVenta = new JButton("Generar Venta");
+        botonBajaVenta.setBounds(224, 324, 128, 25);
         botonBajaVenta.setBackground(Color.GRAY); // Establecer el color de fondo del botón
         botonBajaVenta.setForeground(Color.BLACK);
         
-        botonBajaPorRotura = new JButton("Baja por rotura");
-        botonBajaPorRotura.setBounds(281, 324, 148, 25);
-        botonBajaPorRotura.setBackground(Color.GRAY); // Establecer el color de fondo del botón
-        botonBajaPorRotura.setForeground(Color.BLACK);
-        getContentPane().add(botonBajaPorRotura);
-        
-
-
         // Agregar componentes al contenedor
         Container container = getContentPane();
         container.add(botonBajaVenta);
@@ -94,57 +95,10 @@ public class BajaMercaderia extends JFrame {
     	   
     	botonBajaVenta.addActionListener(new ActionListener() {
     	    public void actionPerformed(ActionEvent e) {
-    	        try {
-    	            int filaSeleccionada = tabla.getSelectedRow();
-    	            if (filaSeleccionada == -1) {
-    	                JOptionPane.showMessageDialog(null, "Seleccione una planta de la tabla para realizar la venta.");
-    	            } else {
-    	                int codigoPlanta = (int) modelo.getValueAt(filaSeleccionada, 2); // Obtener el código de la planta
-    	                int cantidadVendida = (int) spinnerCantidad.getValue(); // Obtener la cantidad vendida del JSpinner
-    	                
-    	                // Realizar la venta y obtener si fue exitosa
-    	                boolean ventaRealizada = plantaController.realizarVenta(codigoPlanta, cantidadVendida);
-    	                if (ventaRealizada) {
-    	                    JOptionPane.showMessageDialog(null, "Venta realizada con éxito.");
-    	                    
-    	                    // Actualizar la cantidad en la tabla
-    	                    int cantidadActual = (int) modelo.getValueAt(filaSeleccionada, 4); // Obtener la cantidad actual de plantas
-    	                    int nuevaCantidad = cantidadActual - cantidadVendida; // Calcular la nueva cantidad
-    	                    modelo.setValueAt(nuevaCantidad, filaSeleccionada, 4); // Actualizar la cantidad en la tabla
-    	                    
-    	                    // Actualizar el stock en la base de datos
-    	                    int cantidadStockActual = plantaController.obtenerCantidadTotalComprada(codigoPlanta) - 
-    	                                               plantaController.obtenerCantidadVendida(codigoPlanta);
-    	                    int nuevoStock = cantidadStockActual - cantidadVendida;
-    	                    // Actualizar el stock en la base de datos
-    	                    plantaController.actualizarStock(codigoPlanta, nuevoStock);
-    	                    
-    	                    // Verificar si el stock es cero y mostrar un mensaje
-    	                    if (nuevoStock == 0) {
-    	                        JOptionPane.showMessageDialog(null, "¡Atención! El stock es cero.");
-    	                    }
-    	                } else {
-    	                    JOptionPane.showMessageDialog(null, "No hay suficiente cantidad en stock para realizar la venta.");
-    	                }
-    	            }
-    	        } catch (SQLException ex) {
-    	            ex.printStackTrace();
-    	            // Manejar la excepción de manera apropiada, como mostrar un mensaje de error al usuario
-    	            JOptionPane.showMessageDialog(null, "Error al realizar la venta: " + ex.getMessage());
-    	        }
+    	    	realizarBajaVenta();
     	    }
     	});
 
-
-
-
-
-
-    	 botonBajaPorRotura.addActionListener(new ActionListener() {
-    	        public void actionPerformed(ActionEvent e) {
-    	            //imprimirEtiqueta();
-    	        }
-    	    });
     	
     }
   
@@ -192,19 +146,88 @@ public class BajaMercaderia extends JFrame {
     }
 
     private void cargarTabla() {
-        // Llenar Tabla
+        // Limpiar la tabla
+        modelo.setRowCount(0);
+
+        // Llenar la tabla con los datos de las plantas
         List<Planta> plantas = ListarPlantas();
-        try {
-            for (Planta planta : plantas) {
-                modelo.addRow(new Object[] { planta.getId(), planta.getFechaIngreso(), planta.getCodigo(),
-                        planta.getNombrePlanta(), planta.getCantidad(), planta.getPrecioCosto(),
-                        planta.getPrecioVenta() });
-            }
-        } catch (Exception e) {
-            throw e;
+        for (Planta planta : plantas) {
+            modelo.addRow(new Object[] { 
+            		planta.getId(), 
+            		planta.getFechaIngreso(), 
+            		planta.getCodigo(),
+                    planta.getNombrePlanta(), 
+                    planta.getCantidad(), 
+                    planta.getPrecioCosto(),
+                    planta.getPrecioVenta() });
         }
     }
 
+    // Método para recargar los datos de la tabla
+    private void recargarTabla() {
+        modelo.setRowCount(0); // Limpiar la tabla
+        cargarTabla(); // Cargar los datos nuevamente
+    }
+    
+    
+    // Método para realizar la baja por venta
+    private void realizarBajaVenta() {
+        try {
+            int filaSeleccionada = tabla.getSelectedRow();
+            if (filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(null, "Seleccione una planta de la tabla para realizar la venta.");
+            } else {
+                int codigoPlanta = (int) modelo.getValueAt(filaSeleccionada, 2); // Obtener el código de la planta
+                int cantidadVendida = (int) spinnerCantidad.getValue(); // Obtener la cantidad vendida del JSpinner
+
+                // Obtener la cantidad actual de la planta en stock
+                int cantidadActual = (int) modelo.getValueAt(filaSeleccionada, 4);
+
+                if (cantidadVendida > cantidadActual) {
+                    JOptionPane.showMessageDialog(null, "No hay suficiente cantidad en stock para realizar la venta.");
+                    return;
+                }
+
+                // Realizar la venta y obtener si fue exitosa
+                boolean ventaRealizada = ventaController.realizarVenta(codigoPlanta, cantidadVendida);
+                if (ventaRealizada) {
+                    JOptionPane.showMessageDialog(null, "Venta realizada con éxito.");
+
+                    // Calcular la nueva cantidad
+                    int nuevaCantidad = cantidadActual - cantidadVendida;
+
+                    // Actualizar la cantidad en el modelo de la tabla
+                    modelo.setValueAt(nuevaCantidad, filaSeleccionada, 4);
+
+                    // Actualizar la tabla de ventas
+                    recargarTablaVentas(codigoPlanta);
+
+                    // Actualizar el valor del spinner con la nueva cantidad
+                    spinnerCantidad.setValue(nuevaCantidad);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al realizar la venta: " + ex.getMessage());
+        }
+    }
+
+
+ // Método para recargar los datos de la tabla de ventas
+    private void recargarTablaVentas(int codigoPlanta) {
+        // Limpiar la tabla de ventas
+        modelo.setRowCount(0);
+
+        // Recargar la tabla de ventas con los datos actualizados
+        List<Venta> ventas = ventaController.obtenerVentasPorPlanta(codigoPlanta);
+        for (Venta venta : ventas) {
+            Object[] fila = {venta.getId(), venta.getPlantaId(), venta.getCantidad(), venta.getFechaVenta()};
+            modelo.addRow(fila);
+        }
+    }
+    
+    
+    
 
 
 

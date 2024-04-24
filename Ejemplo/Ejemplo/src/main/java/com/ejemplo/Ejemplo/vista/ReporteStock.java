@@ -21,7 +21,6 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class ReporteStock extends JFrame {
-	    private JDateChooser textFechaIngreso;
 	    private PlantaController plantaController;
 	    private VentaController ventaController;
 	    private JTable tabla;
@@ -35,23 +34,11 @@ public class ReporteStock extends JFrame {
 
 	        // Configuración del diseño del formulario
 	        getContentPane().setLayout(null);
-	        getContentPane().setBackground(new Color(255, 204, 204)); // Color de fondo
-
-	        // Etiqueta para la fecha
-	        JLabel labelFecha = new JLabel("Fecha:");
-	        labelFecha.setFont(new Font("Tahoma", Font.BOLD, 14));
-	        labelFecha.setBounds(18, 37, 95, 25);
-	        getContentPane().add(labelFecha);
-
-	        // Selector de fecha
-	        textFechaIngreso = new JDateChooser();
-	        textFechaIngreso.setDateFormatString("yyyy-MM-dd");
-	        textFechaIngreso.setBounds(143, 37, 128, 30);
-	        getContentPane().add(textFechaIngreso);
+	        getContentPane().setBackground(new Color(255, 204, 204));
 
 	        // Botón para generar reporte
 	        JButton botonGenerarReporte = new JButton("Generar Reporte");
-	        botonGenerarReporte.setBounds(300, 37, 150, 30);
+	        botonGenerarReporte.setBounds(618, 11, 150, 30);
 	        getContentPane().add(botonGenerarReporte);
 
 	        // Configurar tabla de contenido
@@ -80,8 +67,6 @@ public class ReporteStock extends JFrame {
 	        tabla = new JTable();
 
 	        modelo = new DefaultTableModel();
-	        modelo.addColumn("Fecha de Ingreso");
-	        modelo.addColumn("Fecha de Salida");
 	        modelo.addColumn("Código");
 	        modelo.addColumn("Nombre");
 	        modelo.addColumn("Cantidad Comprada");
@@ -100,14 +85,16 @@ public class ReporteStock extends JFrame {
 	                Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
 	                // Obtener el valor de la celda en la columna "Cantidad en Stock"
-	                int cantidadStock = Integer.parseInt(table.getValueAt(row, column).toString());
+	                Object value1 = table.getValueAt(row, 3);
+	                int cantidadStock = value1 != null ? Integer.parseInt(value1.toString()) : 0;
+
 
 	                // Determinar el color de texto según la cantidad en stock
 	                Color colorTexto;
 	                if (cantidadStock <= 0) {
 	                    colorTexto = Color.RED; // Sin stock
 	                } else if (cantidadStock <= 10) {
-	                    colorTexto = Color.YELLOW; // Menos de 10 en stock
+	                    colorTexto = Color.ORANGE; // Menos de 10 en stock
 	                } else {
 	                    colorTexto = Color.GREEN; // Más de 10 en stock
 	                }
@@ -120,10 +107,10 @@ public class ReporteStock extends JFrame {
 	        };
 
 	        // Asignar el renderizador de celdas personalizado a la columna "Cantidad en Stock"
-	        tabla.getColumnModel().getColumn(5).setCellRenderer(stockRenderer);
+	        tabla.getColumnModel().getColumn(3).setCellRenderer(stockRenderer);
 
 	        JScrollPane scrollPane = new JScrollPane(tabla);
-	        scrollPane.setBounds(18, 90, 750, 330);
+	        scrollPane.setBounds(18, 63, 750, 330);
 	        getContentPane().add(scrollPane);
 	    }
 	    
@@ -139,24 +126,24 @@ public class ReporteStock extends JFrame {
 	            for (Planta planta : plantas) {
 	                // Obtener la cantidad total comprada de la planta
 	                int cantidadComprada = plantaController.obtenerCantidadTotalComprada(planta.getId());
-	                // Obtener las ventas para esta planta
-	                int cantidadVendida = 0;
-	                List<Venta> ventas = ventaController.obtenerVentasPorPlanta(planta.getId());
-	                for (Venta venta : ventas) {
-	                    cantidadVendida += venta.getCantidad();
-	                }
-	                
-	                // Calcular la cantidad en stock
+
+	                // Obtener la cantidad total vendida de la planta
+	                int cantidadVendida = ventaController.obtenerCantidadVendida(planta.getId());
+
+	                // Calcular la cantidad en stock como la diferencia entre la cantidad comprada y la cantidad vendida
 	                int cantidadStock = cantidadComprada - cantidadVendida;
 
 	                // Agregar fila al modelo de la tabla
-	                modelo.addRow(new Object[] { planta.getFechaIngreso(), planta.getFechaSalida(), planta.getCodigo(),
-	                        planta.getNombrePlanta(), cantidadComprada, cantidadVendida, cantidadStock });
+	                modelo.addRow(new Object[] {
+	                    planta.getCodigo(),
+	                    planta.getNombrePlanta(), 
+	                    cantidadComprada, 
+	                    cantidadVendida, 
+	                    cantidadStock 
+	                });
 	            }
 	        }
 	    }
-
-
 
 
 
