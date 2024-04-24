@@ -6,7 +6,6 @@ public class Planta {
 	
 	private Integer id;
 	private Date fechaIngreso;
-	private Date fechaSalida;
 	private Integer codigo;
 	private String nombrePlanta;
 	private Integer cantidad;
@@ -19,12 +18,11 @@ public class Planta {
 	}
 
 
-	public Planta(Integer id, Date fechaIngreso, Date fechaSalida, Integer codigo, String nombrePlanta,
+	public Planta(Integer id, Date fechaIngreso, Integer codigo, String nombrePlanta,
 			Integer cantidad, Double precioCosto, Double precioVenta) {
 		super();
 		this.id = id;
 		this.fechaIngreso = fechaIngreso;
-		this.fechaSalida = fechaSalida;
 		this.codigo = codigo;
 		this.nombrePlanta = nombrePlanta;
 		this.cantidad = cantidad;
@@ -70,16 +68,6 @@ public class Planta {
 
 	public void setFechaIngreso(Date fechaIngreso) {
 		this.fechaIngreso = fechaIngreso;
-	}
-
-
-	public Date getFechaSalida() {
-		return fechaSalida;
-	}
-
-
-	public void setFechaSalida(Date fechaSalida) {
-		this.fechaSalida = fechaSalida;
 	}
 
 

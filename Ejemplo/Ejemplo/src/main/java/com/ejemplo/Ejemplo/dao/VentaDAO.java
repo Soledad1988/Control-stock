@@ -19,38 +19,39 @@ final private Connection con;
 		this.con = con;
 	}
 	
-	 public boolean realizarVenta(int codigo, int cantidad) throws SQLException {
-		    int cantidadDisponible = obtenerCantidadDisponible(codigo);
-		    if (cantidadDisponible < cantidad) {
-		        System.out.println("No hay suficiente cantidad en stock para realizar la venta.");
-		        return false;
-		    }
+	public boolean realizarVenta(int codigo, int cantidad) throws SQLException {
+	    int cantidadDisponible = obtenerCantidadDisponible(codigo);
+	    if (cantidadDisponible < cantidad) {
+	        System.out.println("No hay suficiente cantidad en stock para realizar la venta.");
+	        return false;
+	    }
 
-		    // Obtener la planta correspondiente al código
-		    Planta planta = obtenerPlantaPorCodigo(codigo);
+	    // Obtener la planta correspondiente al código
+	    Planta planta = obtenerPlantaPorCodigo(codigo);
 
-		    // Actualizar la cantidad en stock
-		    int nuevaCantidad = planta.getCantidad() - cantidad;
-		    if (nuevaCantidad < 0) {
-		        System.out.println("Error: La cantidad vendida es mayor que la cantidad en stock.");
-		        return false;
-		    }
+	    // Actualizar la cantidad en stock
+	    int nuevaCantidad = planta.getCantidad() - cantidad;
+	    if (nuevaCantidad < 0) {
+	        System.out.println("Error: La cantidad vendida es mayor que la cantidad en stock.");
+	        return false;
+	    }
 
-		    actualizarCantidad(planta.getId(), nuevaCantidad);
+	    actualizarCantidad(planta.getId(), nuevaCantidad);
 
-		    // Obtener la fecha actual para la fecha de salida
-		    Date fechaVenta = new Date();
+	    // Obtener la fecha actual para la fecha de venta
+	    Date fechaVenta = new Date(); // Obtener la fecha actual
+	    
+	    // Actualizar la fecha de salida en la base de datos
+	    actualizarFechaVenta(planta.getId(), fechaVenta);
 
-		    // Actualizar la fecha de salida en la base de datos
-		    actualizarFechaSalida(planta.getId(), fechaVenta);
+	    // Registrar la venta en la tabla ventas
+	    registrarVenta(planta.getId(), cantidad, fechaVenta); // Pasar la fechaVenta
 
-		    // Registrar la venta en la tabla ventas
-		    registrarVenta(planta.getId(), cantidad, fechaVenta);
+	    System.out.println("Venta realizada con éxito.");
 
-		    System.out.println("Venta realizada con éxito.");
+	    return true;
+	}
 
-		    return true;
-		}
 	 
 	 private int obtenerCantidadDisponible(int codigo) {
 		    int cantidadDisponible = 0;
@@ -70,6 +71,7 @@ final private Connection con;
 		    return cantidadDisponible;
 		}
 
+	 
 		private Planta obtenerPlantaPorCodigo(int codigo) {
 		    Planta planta = null;
 		    try {
@@ -81,7 +83,6 @@ final private Connection con;
 		            planta = new Planta();
 		            planta.setId(rs.getInt("id"));
 		            planta.setFechaIngreso(rs.getDate("fechaIngreso"));
-		            planta.setFechaSalida(rs.getDate("fechaSalida"));
 		            planta.setCodigo(rs.getInt("codigo"));
 		            planta.setNombrePlanta(rs.getString("nombrePlanta"));
 		            planta.setCantidad(rs.getInt("cantidad"));
@@ -110,19 +111,20 @@ final private Connection con;
 			    }
 			}
 
-		private void actualizarFechaSalida(int plantaId, Date fechaSalida) {
-		    try {
-		        String sql = "UPDATE plantas SET fechaSalida = ? WHERE id = ?";
-		        PreparedStatement stm = con.prepareStatement(sql);
-		        stm.setDate(1, new java.sql.Date(fechaSalida.getTime()));
-		        stm.setInt(2, plantaId);
-		        stm.executeUpdate();
-		        stm.close();
-		    } catch (SQLException e) {
-		        e.printStackTrace();
-		        // Maneja la excepción de manera apropiada
-		    }
-		}
+		 private void actualizarFechaVenta(int ventaId, Date fechaVenta) {
+			    try {
+			        String sql = "UPDATE ventas SET fecha_venta = ? WHERE id = ?";
+			        PreparedStatement stm = con.prepareStatement(sql);
+			        stm.setDate(1, new java.sql.Date(fechaVenta.getTime()));
+			        stm.setInt(2, ventaId);
+			        stm.executeUpdate();
+			        stm.close();
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			        // Maneja la excepción de manera apropiada
+			    }
+			}
+
 		
 
 		private void registrarVenta(int plantaId, int cantidad, Date fechaVenta) {
@@ -131,7 +133,7 @@ final private Connection con;
 		        PreparedStatement stm = con.prepareStatement(sql);
 		        stm.setInt(1, plantaId);
 		        stm.setInt(2, cantidad);
-		        stm.setDate(3, new java.sql.Date(fechaVenta.getTime()));
+		        stm.setDate(3, new java.sql.Date(fechaVenta.getTime())); // Establecer la fechaVenta
 		        stm.executeUpdate();
 		        stm.close();
 		    } catch (SQLException e) {
@@ -139,6 +141,7 @@ final private Connection con;
 		        // Maneja la excepción de manera apropiada
 		    }
 		}
+
 		
 		public int obtenerCantidadVendida(int plantaId) {
 		    int cantidadVendida = 0;

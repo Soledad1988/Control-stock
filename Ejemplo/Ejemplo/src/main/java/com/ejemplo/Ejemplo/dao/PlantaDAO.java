@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,5 +108,12 @@ public class PlantaDAO {
 	        return cantidadTotalComprada;
 	    }
 	    
+	    
+	    public double calcularPrecioVenta(double precioCosto, double porcentajeGanancia) {
+	        double precioVenta = precioCosto * (1 + (porcentajeGanancia / 100));
+	        // Redondear el precio de venta a dos decimales
+	        DecimalFormat df = new DecimalFormat("#.##");
+	        return Double.valueOf(df.format(precioVenta));
+	    }
 	    
 }

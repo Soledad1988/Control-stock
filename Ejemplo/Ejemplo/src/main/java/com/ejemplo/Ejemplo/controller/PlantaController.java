@@ -34,5 +34,8 @@ public class PlantaController {
 		return this.plantaDAO.obtenerCantidadTotalComprada(plantaId);
 	}
 	
+	public double calcularPrecioVenta(double precioCosto, double porcentajeGanancia) {
+		return this.plantaDAO.calcularPrecioVenta(precioCosto, porcentajeGanancia);
+	}
 	
 }
