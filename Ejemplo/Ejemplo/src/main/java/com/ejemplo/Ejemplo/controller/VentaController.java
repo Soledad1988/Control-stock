@@ -22,4 +22,14 @@ private VentaDAO ventaDAO;
 	    return this.ventaDAO.obtenerVentasPorPlanta(plantaId);
 	}
 	
+	public boolean realizarVenta(int codigo, int cantidad) throws SQLException {
+	    return this.ventaDAO.realizarVenta(codigo, cantidad);
+	}
+	
+	public int obtenerCantidadVendida(int plantaId) {
+	    return this.ventaDAO.obtenerCantidadVendida(plantaId);
+	}
+
+
+	
 }

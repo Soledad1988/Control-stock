@@ -10,17 +10,20 @@ public class Venta {
     private Date fechaVenta;
 
     public Venta() {
+    	
     }
 
-    public Venta(Integer plantaId, Integer cantidad, Date fechaVenta) {
-        this.plantaId = plantaId;
-        this.cantidad = cantidad;
-        this.fechaVenta = fechaVenta;
-    }
+    public Venta(Integer id, Integer plantaId, Integer cantidad, Date fechaVenta) {
+		super();
+		this.id = id;
+		this.plantaId = plantaId;
+		this.cantidad = cantidad;
+		this.fechaVenta = fechaVenta;
+	}
 
-    // Getters y Setters
+	// Getters y Setters
 
-    public Integer getId() {
+	public Integer getId() {
         return id;
     }
 
