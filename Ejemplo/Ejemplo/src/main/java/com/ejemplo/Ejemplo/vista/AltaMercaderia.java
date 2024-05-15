@@ -17,7 +17,9 @@ import javax.swing.border.LineBorder;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.toedter.calendar.JDateChooser;
 
@@ -219,22 +221,34 @@ public class AltaMercaderia extends JFrame {
 
             // Abrir el documento
             document.open();
+            
+            // Crear tabla para contener los datos
+            PdfPTable tabla = new PdfPTable(1);
+            tabla.setWidthPercentage(70); // Establecer el ancho de la tabla al 70% del ancho de la página
+            tabla.setHorizontalAlignment(Element.ALIGN_CENTER); // Centrar la tabla en la página
+
 
             // Agregar los datos de la mercadería al documento
             document.add(new Paragraph("Código: " + codigo));
             document.add(new Paragraph("Nombre: " + nombre));
+            
             // Obtener el precio de venta de la entidad Planta
             // Obtener el precio de venta desde el DAO
             double precioVenta = this.plantaController.obtenerPrecioVenta(Integer.parseInt(codigo));
 
             document.add(new Paragraph("Precio de venta: " + precioVenta)); // Imprimir el precio de venta
 
-            // Cerrar el documento
-            document.close();
+            
+         // Agregar la tabla al documento
+            document.add(tabla);
+            
             JOptionPane.showMessageDialog(this, "Imprimiendo etiqueta...");
 
             // Limpiar el formulario después de imprimir la etiqueta
             limpiarFormulario();
+            
+            // Cerrar el documento
+            document.close();
 
             // Mostrar un mensaje de confirmación
             JOptionPane.showMessageDialog(this, "La etiqueta ha sido impresa correctamente en el archivo '" + nombreArchivo + "' en la carpeta 'etiquetas' del escritorio", "Etiqueta Impresa", JOptionPane.INFORMATION_MESSAGE);
